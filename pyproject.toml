@@ -6,11 +6,49 @@ authors = [
     {name = "ivansantiagojr",email = "ivansantiago.junior@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.13,<3.14"
 dependencies = [
+    "pyside6 (>=6.8.2.1,<7.0.0.0)"
 ]
+
+[project.scripts]
+bossa = "bossasql.main:app"
 
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.9.10"
+mypy = "^1.15.0"
+pytest = "^8.3.5"
+pytest-cov = "^6.0.0"
+pytest-asyncio = "^0.25.3"
+taskipy = "^1.14.1"
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT']
+
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = '-p no:warnings'
+
+[tool.mypy]
+ignore_missing_imports = true
+check_untyped_defs = true
+
+[tool.taskipy.tasks]
+lint = 'ruff check .; ruff check . --diff'
+format = 'ruff check . --fix; ruff format .'
+pre_test = 'task lint'
+test = 'pytest -s -x --cov=bossasql -vv'
+post_test = 'coverage html'
